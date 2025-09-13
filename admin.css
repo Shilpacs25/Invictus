@@ -1,0 +1,181 @@
+/* ===== Global Styles ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #0b123d; /* Dark blue background */
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* ===== Headings ===== */
+h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  color: #4fc3f7;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #81d4fa;
+}
+
+/* ===== Logout Button ===== */
+body > button {
+  align-self: flex-end;
+  margin-bottom: 20px;
+  display: inline-block;
+  padding: 10px 20px;
+  background: linear-gradient(90deg, #4fc3f7, #0288d1);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+body > button:hover {
+  background: linear-gradient(90deg, #0288d1, #4fc3f7);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 140, 255, 0.5);
+}
+
+/* ===== Sections (Compact Card Style) ===== */
+section {
+  margin: 20px auto;             /* center horizontally and add spacing between cards */
+  padding: 20px;
+  max-width: 800px;              /* limits section width */
+  width: 90%;                    /* responsive width */
+  background-color: #121d42;     /* slightly lighter dark blue */
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== Inputs and Selects ===== */
+input, select {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 8px;
+  background-color: #1b2a5a; /* Darker blue input */
+  color: #e0e0e0;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+input::placeholder {
+  color: #a0baff;
+}
+
+input:focus, select:focus {
+  background-color: #253b7a;
+  box-shadow: 0 0 0 2px #4fc3f7;
+}
+
+/* ===== Buttons inside sections ===== */
+section button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 10px;
+  background: linear-gradient(90deg, #4fc3f7, #0288d1);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+section button:hover {
+  background: linear-gradient(90deg, #0288d1, #4fc3f7);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 140, 255, 0.5);
+}
+
+/* ===== Tables (Compact) ===== */
+table {
+  border-collapse: collapse;
+  width: auto;                  /* only as wide as content */
+  max-width: 100%;              /* but not wider than section */
+  margin-top: 15px;
+}
+
+th, td {
+  border: 1px solid #2a3a6f;
+  padding: 10px;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+th {
+  background-color: #1b2a5a;
+  color: #81d4fa;
+}
+
+tr:nth-child(even) {
+  background-color: #101b3a;
+}
+
+tr:hover {
+  background-color: #253b7a;
+}
+
+/* ===== Lists ===== */
+ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+ul li {
+  background-color: #1b2a5a;
+  margin-bottom: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+ul li:hover {
+  background-color: #253b7a;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  h2 {
+    font-size: 1.7rem;
+  }
+  h3 {
+    font-size: 1.3rem;
+  }
+  th, td {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+  input, select, button {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  section {
+    padding: 15px;
+  }
+  body > button {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+}

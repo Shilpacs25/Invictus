@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Teacher Page</title>
+  <title>Teacher Dashboard</title>
+  <link rel="stylesheet" href="teacher.css">
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyC6LOG_AnWQabbT1hB3tt0seqIcji4_11g",
@@ -21,6 +22,7 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
+    // Add Expense
     window.addExpense = async function() {
       const amount = Number(document.getElementById("amount").value);
       const description = document.getElementById("description").value;
@@ -34,42 +36,75 @@
           status: "pending",
           timestamp: serverTimestamp()
         });
-        alert("Expense added successfully!");
+        alert("✅ Expense added successfully!");
       } catch (error) {
-        alert("Error: " + error.message);
+        alert("❌ Error: " + error.message);
       }
     };
 
+    // Fetch Funds
     window.fetchFunds = async function() {
-      const list = document.getElementById("fundList");
-      list.innerHTML = "";
+      const tableBody = document.getElementById("fundsTableBody");
+      tableBody.innerHTML = "";
 
       try {
         const querySnapshot = await getDocs(collection(db, "funds"));
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          const li = document.createElement("li");
-          li.textContent = `Allocated: ${data.amountAllocated}, Used: ${data.amountUsed}, Description: ${data.description}`;
-          list.appendChild(li);
+          const row = document.createElement("tr");
+
+          row.innerHTML = `
+            <td>${data.amountAllocated}</td>
+            <td>${data.amountUsed}</td>
+            <td>${data.description}</td>
+          `;
+          tableBody.appendChild(row);
         });
       } catch (error) {
-        alert("Error: " + error.message);
+        alert("❌ Error: " + error.message);
+      }
+    };
+
+    // Logout
+    window.logout = async function() {
+      try {
+        await signOut(auth);
+        alert("You have been logged out.");
+        window.location.href = "login.html";
+      } catch (error) {
+        alert("❌ Logout error: " + error.message);
       }
     };
   </script>
 </head>
 <body>
-  <h2>Teacher Page – Add Expense & View Funds</h2>
+  <h2>Teacher Dashboard</h2>
+  <button onclick="logout()">Logout</button>
 
-  <h3>Add Expense</h3>
-  <input type="number" id="amount" placeholder="Amount" />
-  <input type="text" id="description" placeholder="Description" />
-  <button onclick="addExpense()">Add Expense</button>
+  <!-- Add Expense Section -->
+  <section>
+    <h3>Add Expense</h3>
+    <input type="number" id="amount" placeholder="Amount" />
+    <input type="text" id="description" placeholder="Description" />
+    <button onclick="addExpense()">Submit Expense</button>
+  </section>
 
-  <h3>View Funds</h3>
-  <button onclick="fetchFunds()">Load Funds</button>
-  <ul id="fundList"></ul>
-
+  <!-- View Funds Section -->
+  <section>
+    <h3>View School Funds</h3>
+    <button onclick="fetchFunds()">Load Funds</button>
+    <table>
+      <thead>
+        <tr>
+          <th>Allocated</th>
+          <th>Used</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody id="fundsTableBody">
+        <!-- Rows will be loaded dynamically -->
+      </tbody>
+    </table>
+  </section>
 </body>
 </html>
-

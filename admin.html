@@ -2,13 +2,12 @@
 <html>
 <head>
   <title>Admin Page</title>
+  <link rel="stylesheet" href="admin.css">
   <script type="module">
-    // Import Firebase modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-    // Your Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyC6LOG_AnWQabbT1hB3tt0seqIcji4_11g",
       authDomain: "invictus-1e456.firebaseapp.com",
@@ -19,7 +18,6 @@
       measurementId: "G-Y38FCW0HGK"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
@@ -43,34 +41,214 @@
     };
 
     window.fetchFunds = async function() {
-      const list = document.getElementById("fundList");
-      list.innerHTML = "";
+      const tableBody = document.getElementById("fundTableBody");
+      tableBody.innerHTML = "";
+
+      const filterSchool = document.getElementById("fundFilterSchool").value.trim().toLowerCase();
+      const filterDate = document.getElementById("fundFilterDate").value;
 
       try {
         const querySnapshot = await getDocs(collection(db, "funds"));
         querySnapshot.forEach((doc) => {
           const data = doc.data();
+
+          let match = true;
+
+          if (filterSchool && (!data.schoolId || data.schoolId.toLowerCase().indexOf(filterSchool) === -1)) {
+            match = false;
+          }
+
+          if (filterDate && data.timestamp) {
+            const fundDate = data.timestamp.toDate().toISOString().split('T')[0];
+            if (fundDate !== filterDate) {
+              match = false;
+            }
+          }
+
+          if (match) {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${data.schoolId || "N/A"}</td>
+              <td>${data.amountAllocated}</td>
+              <td>${data.amountUsed}</td>
+              <td>${data.description}</td>
+              <td>${data.timestamp ? data.timestamp.toDate().toLocaleString() : ""}</td>
+            `;
+            tableBody.appendChild(row);
+          }
+        });
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    };
+
+   window.fetchExpenses = async function() {
+  const tableBody = document.getElementById("expenseTableBody");
+  tableBody.innerHTML = "";
+
+  const filterTeacher = document.getElementById("expenseFilterTeacher").value.trim().toLowerCase();
+  const filterSchool = document.getElementById("expenseFilterSchool").value.trim().toLowerCase();
+  const filterDate = document.getElementById("expenseFilterDate").value;
+
+  try {
+    const querySnapshot = await getDocs(collection(db, "expenses"));
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+
+      let match = true;
+
+      if (filterTeacher && (!data.teacherId || data.teacherId.toLowerCase().indexOf(filterTeacher) === -1)) {
+        match = false;
+      }
+
+      if (filterSchool && (!data.schoolId || data.schoolId.toLowerCase().indexOf(filterSchool) === -1)) {
+        match = false;
+      }
+
+      if (filterDate && data.timestamp) {
+        const expenseDate = data.timestamp.toDate().toISOString().split('T')[0];
+        if (expenseDate !== filterDate) {
+          match = false;
+        }
+      }
+
+      if (match) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${data.teacherId || "N/A"}</td>
+          <td>${data.schoolId || "N/A"}</td>
+          <td>${data.amount}</td>
+          <td>${data.description}</td>
+          <td>${data.timestamp ? data.timestamp.toDate().toLocaleString() : ""}</td>
+        `;
+        tableBody.appendChild(row);
+      }
+    });
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
+};
+
+    window.fetchFeedback = async function() {
+      const list = document.getElementById("feedbackList");
+      list.innerHTML = "";
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "feedback"));
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
           const li = document.createElement("li");
-          li.textContent = `Allocated: ${data.amountAllocated}, Used: ${data.amountUsed}, Description: ${data.description}`;
+          li.textContent = `[${data.userId || "N/A"}] ${data.message} (${data.timestamp ? data.timestamp.toDate().toLocaleString() : ""})`;
           list.appendChild(li);
         });
       } catch (error) {
         alert("Error: " + error.message);
       }
     };
+
+    window.fetchUsers = async function() {
+      const tableBody = document.getElementById("userTableBody");
+      tableBody.innerHTML = "";
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${data.name || "N/A"}</td>
+            <td>${data.email || "N/A"}</td>
+            <td>${data.role || "N/A"}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    };
+
+    window.logout = function() {
+      signOut(auth)
+        .then(() => alert("Logged out successfully!"))
+        .catch((error) => alert("Error: " + error.message));
+    };
   </script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h2 { margin-bottom: 10px; }
+    section { margin-bottom: 30px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #0b123d; }
+    input, button { margin: 5px 0; padding: 5px; }
+  </style>
 </head>
 <body>
-  <h2>Admin Page – Add and View Funds</h2>
+  <h2>Admin Dashboard</h2>
+  <button onclick="logout()">Logout</button>
 
-  <h3>Add Fund</h3>
-  <input type="number" id="amountAllocated" placeholder="Amount Allocated" />
-  <input type="text" id="description" placeholder="Description" />
-  <button onclick="addFund()">Add Fund</button>
+  <!-- View Funds -->
+  <section>
+    <h3>View Funds</h3>
+    <input type="text" id="fundFilterSchool" placeholder="Filter by School" />
+    <input type="date" id="fundFilterDate" placeholder="Filter by Date" />
+    <button onclick="fetchFunds()">Load Funds</button>
+    <table>
+      <thead>
+        <tr>
+          <th>School</th>
+          <th>Allocated</th>
+          <th>Used</th>
+          <th>Description</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="fundTableBody"></tbody>
+    </table>
+  </section>
 
-  <h3>View Funds</h3>
-  <button onclick="fetchFunds()">Load Funds</button>
-  <ul id="fundList"></ul>
+  <!-- View Expenses -->
+  <section>
+    <h3>View Expenses</h3>
+    <input type="text" id="expenseFilterTeacher" placeholder="Filter by Teacher" />
+    <input type="text" id="expenseFilterSchool" placeholder="Filter by School" />
+    <input type="date" id="expenseFilterDate" placeholder="Filter by Date" />
+    <button onclick="fetchExpenses()">Load Expenses</button>
+    <table>
+      <thead>
+        <tr>
+          <th>Teacher</th>
+          <th>School</th>
+          <th>Amount</th>
+          <th>Description</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="expenseTableBody"></tbody>
+    </table>
+  </section>
 
+  <!-- Feedback Section -->
+  <section>
+    <h3>Feedback</h3>
+    <button onclick="fetchFeedback()">Load Feedback</button>
+    <ul id="feedbackList"></ul>
+  </section>
+
+  <!-- User Management -->
+  <section>
+    <h3>User Management</h3>
+    <button onclick="fetchUsers()">Load Users</button>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody"></tbody>
+    </table>
+  </section>
 </body>
 </html>

@@ -2,32 +2,173 @@
 <html>
 <head>
   <title>Student Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="firebaseConfig.js"></script>
-</head>
-<body>
-  <h1>Welcome Student!</h1>
-  <p>This is the student dashboard where you can view feedback.</p>
+  <link rel="stylesheet" href="student.css">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-  <script>
-    window.onload = async () => {
-      firebase.auth().onAuthStateChanged(async (user) => {
-        if (user) {
-          const doc = await firebase.firestore().collection("users").doc(user.uid).get();
-          if (doc.exists && doc.data().role === "student") {
-            console.log("Access granted to student.");
-          } else {
-            alert("Access denied!");
-            window.location.href = "login.html";
-          }
-        } else {
-          window.location.href = "login.html";
-        }
-      });
+    const firebaseConfig = {
+      apiKey: "AIzaSyC6LOG_AnWQabbT1hB3tt0seqIcji4_11g",
+      authDomain: "invictus-1e456.firebaseapp.com",
+      projectId: "invictus-1e456",
+      storageBucket: "invictus-1e456.firebasestorage.app",
+      messagingSenderId: "574994763158",
+      appId: "1:574994763158:web:fce7848d138e793556e1b7",
+      measurementId: "G-Y38FCW0HGK"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      }
+    });
+
+    window.loadFeedback = async function() {
+      const list = document.getElementById("feedbackList");
+      list.innerHTML = "";
+      try {
+        const querySnapshot = await getDocs(collection(db, "feedback"));
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const li = document.createElement("li");
+          li.textContent = `${data.userId || "Unknown"}: ${data.message} (${data.timestamp ? data.timestamp.toDate().toLocaleString() : ""})`;
+          list.appendChild(li);
+        });
+      } catch (error) {
+        alert("Error loading feedback: " + error.message);
+      }
+    };
+
+    window.submitFeedback = async function() {
+      const message = document.getElementById("feedbackInput").value.trim();
+      if (!message) {
+        alert("Please enter a feedback message.");
+        return;
+      }
+      try {
+        const user = auth.currentUser;
+        await addDoc(collection(db, "feedback"), {
+          userId: user ? user.uid : "Anonymous",
+          message: message,
+          timestamp: serverTimestamp()
+        });
+        alert("Feedback submitted!");
+        document.getElementById("feedbackInput").value = "";
+        loadFeedback();
+      } catch (error) {
+        alert("Error submitting feedback: " + error.message);
+      }
+    };
+
+    window.loadFunds = async function() {
+      const tableBody = document.getElementById("fundTableBody");
+      tableBody.innerHTML = "";
+      try {
+        const querySnapshot = await getDocs(collection(db, "funds"));
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${data.schoolId || "N/A"}</td>
+            <td>${data.amountAllocated}</td>
+            <td>${data.amountUsed}</td>
+            <td>${data.description}</td>
+            <td>${data.timestamp ? data.timestamp.toDate().toLocaleString() : ""}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      } catch (error) {
+        alert("Error loading funds: " + error.message);
+      }
+    };
+
+    window.loadExpenses = async function() {
+      const tableBody = document.getElementById("expenseTableBody");
+      tableBody.innerHTML = "";
+      try {
+        const querySnapshot = await getDocs(collection(db, "expenses"));
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${data.teacherId || "N/A"}</td>
+            <td>${data.schoolId || "N/A"}</td>
+            <td>${data.amount}</td>
+            <td>${data.description}</td>
+            <td>${data.timestamp ? data.timestamp.toDate().toLocaleString() : ""}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      } catch (error) {
+        alert("Error loading expenses: " + error.message);
+      }
+    };
+
+    window.logout = function() {
+      signOut(auth)
+        .then(() => window.location.href = "login.html")
+        .catch((error) => alert("Error logging out: " + error.message));
+    };
+
+    window.onload = function() {
+      loadFeedback();
+      loadFunds();
+      loadExpenses();
     };
   </script>
+</head>
+<body>
+  <header>
+    <h1>Student Dashboard</h1>
+    <button onclick="logout()">Logout</button>
+  </header>
+
+  <section>
+    <h2>Feedback</h2>
+    <ul id="feedbackList"></ul>
+    <textarea id="feedbackInput" rows="3" placeholder="Write your feedback here..."></textarea>
+    <button onclick="submitFeedback()">Submit Feedback</button>
+  </section>
+
+  <section>
+    <h2>Funds</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>School</th>
+          <th>Allocated</th>
+          <th>Used</th>
+          <th>Description</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="fundTableBody"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Expenses</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Teacher</th>
+          <th>School</th>
+          <th>Amount</th>
+          <th>Description</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="expenseTableBody"></tbody>
+    </table>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Invictus Educational Portal</p>
+  </footer>
 </body>
 </html>

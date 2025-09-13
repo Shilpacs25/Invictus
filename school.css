@@ -1,0 +1,130 @@
+/* ===== Global Styles ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #0b123d; /* Dark blue background */
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* ===== Headings ===== */
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #4fc3f7;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #81d4fa;
+}
+
+/* ===== Sections ===== */
+section {
+  margin-bottom: 25px;
+  padding: 20px;
+  background-color: #121d42; /* Slightly lighter dark blue */
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+#feedback-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+#feedback-list li {
+  background-color: #1b2a5a;
+  margin-bottom: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+#feedback-list li:hover {
+  background-color: #253b7a;
+}
+
+/* ===== Summary Section ===== */
+#summary-section p {
+  font-size: 1rem;
+  color: #cfd8dc;
+}
+
+/* ===== Logout Button ===== */
+#logoutBtn {
+  padding: 12px 25px;
+  background: linear-gradient(90deg, #4fc3f7, #0288d1);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: center;
+}
+
+#logoutBtn:hover {
+  background: linear-gradient(90deg, #0288d1, #4fc3f7);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 140, 255, 0.5);
+}
+
+/* ===== Footer (Optional, if you plan to add it) ===== */
+.footer {
+  background-color: #121d42;
+  text-align: center;
+  padding: 15px 20px;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin-top: auto; /* pushes footer to bottom */
+}
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.7rem;
+  }
+  h2 {
+    font-size: 1.3rem;
+  }
+  #summary-section p {
+    font-size: 0.95rem;
+  }
+  #logoutBtn {
+    font-size: 0.95rem;
+    padding: 10px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+  h1 {
+    font-size: 1.5rem;
+  }
+  h2 {
+    font-size: 1.1rem;
+  }
+  #summary-section p {
+    font-size: 0.9rem;
+  }
+  #logoutBtn {
+    width: 100%;
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+}
