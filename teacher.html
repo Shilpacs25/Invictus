@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="teacher.css">
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, where, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
     import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -22,21 +22,57 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    // Add Expense
+    // Add Expense with Fund Limit Check and Auto Reload
     window.addExpense = async function() {
+      const schoolId = document.getElementById("schoolId").value.trim();
       const amount = Number(document.getElementById("amount").value);
       const description = document.getElementById("description").value;
 
+      if (!schoolId || !amount || amount <= 0 || !description) {
+        alert("Please fill all fields with valid data.");
+        return;
+      }
+
       try {
+        // Find the fund for the schoolId
+        const fundsQuery = query(collection(db, "funds"), where("schoolId", "==", schoolId));
+        const querySnapshot = await getDocs(fundsQuery);
+
+        if (querySnapshot.empty) {
+          alert("❌ No fund found for the provided School ID.");
+          return;
+        }
+
+        const fundDoc = querySnapshot.docs[0];
+        const fundData = fundDoc.data();
+        const availableAmount = fundData.amountAllocated - fundData.amountUsed;
+
+        if (amount > availableAmount) {
+          alert("❌ Expense amount exceeds available funds.");
+          return;
+        }
+
+        // Add the expense
         await addDoc(collection(db, "expenses"), {
-          schoolId: "school_001",
-          teacherId: "teacher_001",
+          schoolId: schoolId,
+          teacherId: "teacher_001",  // Replace with actual teacher ID if available
           amount: amount,
           description: description,
           status: "pending",
           timestamp: serverTimestamp()
         });
-        alert("✅ Expense added successfully!");
+
+        // Update the fund's amountUsed
+        const fundRef = doc(db, "funds", fundDoc.id);
+        await updateDoc(fundRef, {
+          amountUsed: fundData.amountUsed + amount
+        });
+
+        alert("✅ Expense added and fund updated successfully!");
+
+        // Automatically reload the fund table
+        fetchFunds();
+
       } catch (error) {
         alert("❌ Error: " + error.message);
       }
@@ -54,6 +90,7 @@
           const row = document.createElement("tr");
 
           row.innerHTML = `
+            <td>${data.schoolId}</td>
             <td>${data.amountAllocated}</td>
             <td>${data.amountUsed}</td>
             <td>${data.description}</td>
@@ -75,6 +112,11 @@
         alert("❌ Logout error: " + error.message);
       }
     };
+
+    // Load funds on page load
+    window.onload = function() {
+      fetchFunds();
+    };
   </script>
 </head>
 <body>
@@ -84,6 +126,7 @@
   <!-- Add Expense Section -->
   <section>
     <h3>Add Expense</h3>
+    <input type="text" id="schoolId" placeholder="School ID" />
     <input type="number" id="amount" placeholder="Amount" />
     <input type="text" id="description" placeholder="Description" />
     <button onclick="addExpense()">Submit Expense</button>
@@ -93,9 +136,10 @@
   <section>
     <h3>View School Funds</h3>
     <button onclick="fetchFunds()">Load Funds</button>
-    <table>
+    <table border="1" cellpadding="8" cellspacing="0">
       <thead>
         <tr>
+          <th>School ID</th>
           <th>Allocated</th>
           <th>Used</th>
           <th>Description</th>

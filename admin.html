@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin Page</title>
+  <title>Admin Dashboard</title>
   <link rel="stylesheet" href="admin.css">
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyC6LOG_AnWQabbT1hB3tt0seqIcji4_11g",
@@ -22,24 +22,55 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    window.addFund = async function() {
+    // Auth check
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        alert("Please log in first.");
+        window.location.href = "login.html";
+      }
+    });
+
+    // Logout
+    window.logout = async function() {
+      try {
+        await signOut(auth);
+        alert("You have been logged out.");
+        window.location.href = "login.html";
+      } catch (error) {
+        alert("Logout error: " + error.message);
+      }
+    };
+
+    // Allocate fund to school
+    window.allocateFund = async function() {
+      const schoolId = document.getElementById("schoolId").value.trim();
       const amount = Number(document.getElementById("amountAllocated").value);
-      const description = document.getElementById("description").value;
+      const description = document.getElementById("description").value.trim();
+
+      if (!schoolId || amount <= 0 || !description) {
+        alert("Please fill all fields correctly.");
+        return;
+      }
 
       try {
         await addDoc(collection(db, "funds"), {
           amountAllocated: amount,
           amountUsed: 0,
-          schoolId: "school_001",
+          schoolId: schoolId,
           description: description,
           timestamp: serverTimestamp()
         });
-        alert("Fund added successfully!");
+        alert("Fund allocated successfully!");
+        document.getElementById("schoolId").value = "";
+        document.getElementById("amountAllocated").value = "";
+        document.getElementById("description").value = "";
+        fetchFunds();
       } catch (error) {
         alert("Error: " + error.message);
       }
     };
 
+    // Fetch and display funds
     window.fetchFunds = async function() {
       const tableBody = document.getElementById("fundTableBody");
       tableBody.innerHTML = "";
@@ -49,28 +80,24 @@
 
       try {
         const querySnapshot = await getDocs(collection(db, "funds"));
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach(doc => {
           const data = doc.data();
-
           let match = true;
 
-          if (filterSchool && (!data.schoolId || data.schoolId.toLowerCase().indexOf(filterSchool) === -1)) {
-            match = false;
-          }
-
+          if (filterSchool && (!data.schoolId || data.schoolId.toLowerCase().indexOf(filterSchool) === -1)) match = false;
           if (filterDate && data.timestamp) {
             const fundDate = data.timestamp.toDate().toISOString().split('T')[0];
-            if (fundDate !== filterDate) {
-              match = false;
-            }
+            if (fundDate !== filterDate) match = false;
           }
 
           if (match) {
+            const remaining = data.amountAllocated - data.amountUsed;
             const row = document.createElement("tr");
             row.innerHTML = `
               <td>${data.schoolId || "N/A"}</td>
               <td>${data.amountAllocated}</td>
               <td>${data.amountUsed}</td>
+              <td>${remaining}</td>
               <td>${data.description}</td>
               <td>${data.timestamp ? data.timestamp.toDate().toLocaleString() : ""}</td>
             `;
@@ -78,81 +105,57 @@
           }
         });
       } catch (error) {
-        alert("Error: " + error.message);
+        alert("Error loading funds: " + error.message);
       }
     };
 
-   window.fetchExpenses = async function() {
-  const tableBody = document.getElementById("expenseTableBody");
-  tableBody.innerHTML = "";
-
-  const filterTeacher = document.getElementById("expenseFilterTeacher").value.trim().toLowerCase();
-  const filterSchool = document.getElementById("expenseFilterSchool").value.trim().toLowerCase();
-  const filterDate = document.getElementById("expenseFilterDate").value;
-
-  try {
-    const querySnapshot = await getDocs(collection(db, "expenses"));
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-
-      let match = true;
-
-      if (filterTeacher && (!data.teacherId || data.teacherId.toLowerCase().indexOf(filterTeacher) === -1)) {
-        match = false;
+    // Fetch and display expenses
+    window.fetchExpenses = async function() {
+      const tableBody = document.getElementById("expenseTableBody");
+      tableBody.innerHTML = "";
+      try {
+        const querySnapshot = await getDocs(collection(db, "expenses"));
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${data.teacherId || "N/A"}</td>
+            <td>${data.schoolId || "N/A"}</td>
+            <td>${data.amount || 0}</td>
+            <td>${data.description || ""}</td>
+            <td>${data.timestamp ? data.timestamp.toDate().toLocaleString() : ""}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      } catch (error) {
+        alert("Error loading expenses: " + error.message);
       }
+    };
 
-      if (filterSchool && (!data.schoolId || data.schoolId.toLowerCase().indexOf(filterSchool) === -1)) {
-        match = false;
-      }
-
-      if (filterDate && data.timestamp) {
-        const expenseDate = data.timestamp.toDate().toISOString().split('T')[0];
-        if (expenseDate !== filterDate) {
-          match = false;
-        }
-      }
-
-      if (match) {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${data.teacherId || "N/A"}</td>
-          <td>${data.schoolId || "N/A"}</td>
-          <td>${data.amount}</td>
-          <td>${data.description}</td>
-          <td>${data.timestamp ? data.timestamp.toDate().toLocaleString() : ""}</td>
-        `;
-        tableBody.appendChild(row);
-      }
-    });
-  } catch (error) {
-    alert("Error: " + error.message);
-  }
-};
-
+    // Fetch and display feedback
     window.fetchFeedback = async function() {
       const list = document.getElementById("feedbackList");
       list.innerHTML = "";
-
       try {
         const querySnapshot = await getDocs(collection(db, "feedback"));
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach(doc => {
           const data = doc.data();
           const li = document.createElement("li");
           li.textContent = `[${data.userId || "N/A"}] ${data.message} (${data.timestamp ? data.timestamp.toDate().toLocaleString() : ""})`;
           list.appendChild(li);
         });
       } catch (error) {
-        alert("Error: " + error.message);
+        alert("Error loading feedback: " + error.message);
       }
     };
 
+    // Fetch and display users
     window.fetchUsers = async function() {
       const tableBody = document.getElementById("userTableBody");
       tableBody.innerHTML = "";
-
       try {
         const querySnapshot = await getDocs(collection(db, "users"));
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach(doc => {
           const data = doc.data();
           const row = document.createElement("tr");
           row.innerHTML = `
@@ -163,29 +166,35 @@
           tableBody.appendChild(row);
         });
       } catch (error) {
-        alert("Error: " + error.message);
+        alert("Error loading users: " + error.message);
       }
     };
-
-    window.logout = function() {
-      signOut(auth)
-        .then(() => alert("Logged out successfully!"))
-        .catch((error) => alert("Error: " + error.message));
-    };
   </script>
+
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
-    h2 { margin-bottom: 10px; }
+    h2, h3 { margin-bottom: 10px; }
     section { margin-bottom: 30px; }
     table { border-collapse: collapse; width: 100%; margin-top: 10px; }
     th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    th { background-color: #0b123d; }
-    input, button { margin: 5px 0; padding: 5px; }
+    th { background-color: #0b123d; color: #fff; }
+    input, button { margin: 5px 0; padding: 8px; width: 100%; box-sizing: border-box; }
+    button { cursor: pointer; background-color: #4fc3f7; color: #000; border: none; border-radius: 5px; }
+    button:hover { background-color: #0288d1; color: #fff; }
   </style>
 </head>
 <body>
   <h2>Admin Dashboard</h2>
   <button onclick="logout()">Logout</button>
+
+  <!-- Allocate Fund -->
+  <section>
+    <h3>Allocate Fund to School</h3>
+    <input type="text" id="schoolId" placeholder="Enter School ID" />
+    <input type="number" id="amountAllocated" placeholder="Enter Amount Allocated" />
+    <input type="text" id="description" placeholder="Enter Description" />
+    <button onclick="allocateFund()">Allocate Fund</button>
+  </section>
 
   <!-- View Funds -->
   <section>
@@ -199,6 +208,7 @@
           <th>School</th>
           <th>Allocated</th>
           <th>Used</th>
+          <th>Remaining</th>
           <th>Description</th>
           <th>Date</th>
         </tr>
@@ -228,14 +238,14 @@
     </table>
   </section>
 
-  <!-- Feedback Section -->
+  <!-- Feedback -->
   <section>
     <h3>Feedback</h3>
     <button onclick="fetchFeedback()">Load Feedback</button>
     <ul id="feedbackList"></ul>
   </section>
 
-  <!-- User Management -->
+  <!-- Users -->
   <section>
     <h3>User Management</h3>
     <button onclick="fetchUsers()">Load Users</button>
