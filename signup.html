@@ -16,49 +16,73 @@
 
   <!-- ===== Navbar ===== -->
   <header class="header">
-    <div class="logo">MyApp</div>
+    <div class="logo">FundTrack</div>
     <nav class="nav-links">
-      <a href="#">Home</a>
-      <a href="#">Features</a>
-      <a href="#">Sign In</a>
-      <a href="#">Contact</a>
+      <a href="#" style="font-size: large;">Home</a>
+      <a href="login.html">Login</a>
     </nav>
   </header>
 
   <!-- ===== Sign Up Form ===== -->
-<main class="main-content">
-  <form id="signup-form">
-    <h2>Sign Up</h2>
-    <br><br>
-    <input type="text" id="name" placeholder="Full Name" required />
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <select id="role" required>
-      <option value="">Select Role</option>
-      <option value="admin">Admin</option>
-      <option value="school">School</option>
-      <option value="teacher">Teacher</option>
-      <option value="student">Student</option>
-      <option value="auditor">Auditor</option>
-    </select>
-    <button type="submit">Sign Up</button>
-  </form>
-</main>
+  <main class="main-content">
+    <form id="signup-form">
+      <h2>Sign Up</h2>
+      <br><br>
+      <input type="text" id="name" placeholder="Full Name" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <select id="role" required>
+        <option value="">Select Role</option>
+        <option value="admin">Admin</option>
+        <option value="teacher">Teacher</option>
+        <option value="student">Student</option>
+      </select>
+      <button type="submit">Sign Up</button>
+    </form>
+  </main>
 
   <!-- ===== Footer ===== -->
   <footer class="footer">
     <p>&copy; 2025 MyApp. All rights reserved.</p>
   </footer>
 
-  <script src="signup.js"></script>
   <script>
-    // Simple Hamburger Menu Toggle
-    const hamburger = document.querySelector(".hamburger");
-    const navLinks = document.querySelector(".nav-links");
+    const signupForm = document.getElementById("signup-form");
 
-    hamburger.addEventListener("click", () => {
-      navLinks.classList.toggle("active");
-      hamburger.classList.toggle("toggle");
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const role = document.getElementById("role").value;
+
+      if (!name || !email || !password || !role) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      try {
+        // Create user with Firebase Auth
+        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        // Save additional user info in Firestore
+        await firebase.firestore().collection("users").doc(user.uid).set({
+          name: name,
+          email: email,
+          role: role,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        alert("✅ Signup successful! Redirecting to login page...");
+        
+        // Redirect to login page
+        window.location.href = "login.html";
+
+      } catch (error) {
+        alert("❌ Error: " + error.message);
+      }
     });
   </script>
 

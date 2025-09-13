@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>School Funds Overview</title>
+  <link rel="stylesheet" href="index.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC6LOG_AnWQabbT1hB3tt0seqIcji4_11g",
+      authDomain: "invictus-1e456.firebaseapp.com",
+      projectId: "invictus-1e456",
+      storageBucket: "invictus-1e456.firebasestorage.app",
+      messagingSenderId: "574994763158",
+      appId: "1:574994763158:web:fce7848d138e793556e1b7",
+      measurementId: "G-Y38FCW0HGK"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let barChart, donutChart;
+
+    window.loadFundSummary = async function() {
+      const schoolIds = [];
+      const allocatedAmounts = [];
+      const usedAmounts = [];
+
+      try {
+        const fundsSnap = await getDocs(collection(db, "funds"));
+
+        fundsSnap.forEach(doc => {
+          const data = doc.data();
+          schoolIds.push(data.schoolId || "N/A");
+          allocatedAmounts.push(Number(data.amountAllocated) || 0);
+          usedAmounts.push(Number(data.amountUsed) || 0);
+        });
+
+        const totalAllocated = allocatedAmounts.reduce((a,b) => a+b, 0);
+        const totalUsed = usedAmounts.reduce((a,b) => a+b, 0);
+        const remainingFunds = totalAllocated - totalUsed;
+
+        document.getElementById("allocatedFunds").textContent = totalAllocated;
+        document.getElementById("usedFunds").textContent = totalUsed;
+        document.getElementById("remainingFunds").textContent = remainingFunds;
+
+        // ===== Donut Chart =====
+        const ctxDonut = document.getElementById("donutChart").getContext("2d");
+        if (donutChart) donutChart.destroy();
+        donutChart = new Chart(ctxDonut, {
+          type: "doughnut",
+          data: {
+            labels: ["Used", "Remaining"],
+            datasets: [{ data: [totalUsed, remainingFunds], backgroundColor: ["#e57373", "#81c784"] }]
+          },
+          options: { responsive: true, cutout: "70%", plugins: { legend: { labels: { color: "#ffffff" } } } }
+        });
+
+        // ===== Bar Chart =====
+        const ctxBar = document.getElementById("barChart").getContext("2d");
+        if (barChart) barChart.destroy();
+        barChart = new Chart(ctxBar, {
+          type: "bar",
+          data: {
+            labels: schoolIds,
+            datasets: [
+              { label: "Allocated", data: allocatedAmounts, backgroundColor: "#4fc3f7" },
+              { label: "Used", data: usedAmounts, backgroundColor: "#e57373" }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: "#ffffff" } } },
+            scales: {
+              x: { ticks: { color: "#ffffff" }, grid: { color: "#ffffff55" } },
+              y: { ticks: { color: "#ffffff" }, grid: { color: "#ffffff55" } }
+            }
+          }
+        });
+
+      } catch (error) {
+        alert("Error loading fund summary: " + error.message);
+      }
+    };
+
+    window.onload = loadFundSummary;
+  </script>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #0b123d; color: #ffffff; margin: 0; padding: 20px; }
+    header { display: flex; justify-content: space-between; align-items: center; background-color: #121d42; padding: 15px 20px; border-radius: 8px; }
+    header h1 { color: #4fc3f7; }
+    header button { background: linear-gradient(90deg, #4fc3f7, #0288d1); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; }
+    header button:hover { background: linear-gradient(90deg, #0288d1, #4fc3f7); }
+    section { background-color: #121d42; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+    h2 { margin-bottom: 15px; color: #81d4fa; text-align: center; }
+    .fund-summary { margin-bottom: 20px; text-align: center; }
+    .fund-summary p { font-size: 1.2rem; margin: 8px 0; }
+    .charts { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
+    .chart-card { background-color: #1c275a; padding: 15px; border-radius: 10px; width: 100%; }
+    canvas { max-width: 100%; height: 300px; }
+    footer { text-align: center; padding: 10px; background-color: #121d42; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>School Funds Overview</h1>
+    <div style="display: flex; gap: 10px;">
+      <button onclick="window.location.href='signup.html'">Signup</button>
+      <button onclick="window.location.href='login.html'">Login</button>
+    </div>
+  </header>
+
+  <section>
+    <h2>School Funds Summary</h2>
+    <div class="fund-summary">
+      <p><strong>Total Allocated:</strong> ₹ <span id="allocatedFunds">0</span></p>
+      <p><strong>Total Used:</strong> ₹ <span id="usedFunds">0</span></p>
+      <p><strong>Remaining Funds:</strong> ₹ <span id="remainingFunds">0</span></p>
+    </div>
+
+    <div class="charts">
+      <div class="chart-card" style="max-width: 300px;">
+        <canvas id="donutChart"></canvas>
+      </div>
+      <div class="chart-card" style="max-width: 600px;">
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Invictus Educational Portal</p>
+  </footer>
+</body>
+</html>
