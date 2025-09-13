@@ -1,4 +1,4 @@
-// Your Firebase configuration
+// ===== Firebase Configuration =====
 const firebaseConfig = {
   apiKey: "AIzaSyC6LOG_AnWQabbT1hB3tt0seqIcji4_11g",
   authDomain: "invictus-1e456.firebaseapp.com",
@@ -11,5 +11,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+
+// Export Auth and Firestore for global use
 const auth = firebase.auth();
 const db = firebase.firestore();

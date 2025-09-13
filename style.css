@@ -1,4 +1,150 @@
-body { font-family: Arial, sans-serif; margin: 20px; }
-form { display: flex; flex-direction: column; max-width: 300px; }
-input, select, button { margin: 5px 0; padding: 8px; }
-button { cursor: pointer; }
+/* ===== Global Styles ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #0b123d; /* Dark blue background */
+  color: #ffffff;
+  display: flex;
+  flex-direction: column; /* stack header, main, footer */
+  min-height: 100vh;
+}
+
+/* ===== Header ===== */
+.header {
+  background-color: #121d42; /* Slightly lighter dark blue */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.header .logo {
+  font-size: 1.5rem;
+  color: #4fc3f7; /* Accent blue */
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;       /* horizontal alignment */
+  align-items: center;
+  gap: 20px;           /* space between links */
+}
+
+.nav-links a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #4fc3f7;
+}
+
+/* ===== Main Content ===== */
+.main-content {
+  flex: 1; /* take remaining vertical space, pushes footer down */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* ===== Form Container ===== */
+form {
+  background-color: #121d42; /* Slightly lighter dark blue */
+  padding: 35px 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 420px;
+  transition: transform 0.3s ease;
+}
+
+form:hover {
+  transform: translateY(-5px);
+}
+
+/* ===== Input Fields and Select ===== */
+input, select {
+  width: 100%;
+  padding: 14px 15px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 10px;
+  background-color: #1b2a5a; /* Darker blue input */
+  color: #e0e0e0;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+input::placeholder {
+  color: #a0baff;
+}
+
+input:focus, select:focus {
+  background-color: #253b7a;
+  box-shadow: 0 0 0 2px #4fc3f7;
+}
+
+/* ===== Sign Up / Login Button ===== */
+button {
+  display: inline-block; /* Only as wide as text */
+  padding: 12px 25px;
+  background: linear-gradient(90deg, #4fc3f7, #0288d1);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #0288d1, #4fc3f7);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 140, 255, 0.5);
+}
+
+/* ===== Footer ===== */
+.footer {
+  background-color: #121d42;
+  text-align: center;
+  padding: 15px 20px;
+  box-shadow: 0 -4px 10px rgba(0,0,0,0.3);
+  font-size: 0.9rem;
+  color: #ffffff;
+  width: 100%;
+}
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 600px) {
+  .header, .footer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .nav-links {
+    flex-direction: column;  /* vertical links on small screens */
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  form {
+    padding: 25px 20px;
+  }
+
+  input, select, button {
+    font-size: 0.95rem;
+    padding: 12px 14px;
+  }
+}

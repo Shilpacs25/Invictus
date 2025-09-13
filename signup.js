@@ -1,14 +1,18 @@
+// ===== Signup Form =====
 const signupForm = document.getElementById("signup-form");
 
 signupForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
   const role = document.getElementById("role").value;
 
-  console.log("Form submitted:", { name, email, role });
+  if (!name || !email || !password || !role) {
+    alert("Please fill in all fields.");
+    return;
+  }
 
   try {
     // 1️⃣ Create user in Firebase Auth
@@ -16,12 +20,13 @@ signupForm.addEventListener("submit", async (e) => {
     const user = userCredential.user;
     console.log("User created in Auth:", user.uid);
 
-    // 2️⃣ Add user to Firestore
+    // 2️⃣ Save additional user info in Firestore
     await db.collection("users").doc(user.uid).set({
+      uid: user.uid,
       name,
       email,
       role,
-      createdAt: new Date().toISOString()
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     console.log("User saved in Firestore:", user.uid);
 
@@ -29,6 +34,14 @@ signupForm.addEventListener("submit", async (e) => {
     signupForm.reset();
   } catch (error) {
     console.error("Signup error:", error);
-    alert("Error: " + error.message);
+
+    // Detailed error messages for debugging
+    if (error.code === "auth/email-already-in-use") {
+      alert("This email is already registered.");
+    } else if (error.code === "auth/weak-password") {
+      alert("Password should be at least 6 characters.");
+    } else {
+      alert("Error: " + error.message);
+    }
   }
 });

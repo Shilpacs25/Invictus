@@ -13,8 +13,23 @@
   <script src="firebaseConfig.js"></script>
 </head>
 <body>
-  <h2>Sign Up</h2>
+
+  <!-- ===== Navbar ===== -->
+  <header class="header">
+    <div class="logo">MyApp</div>
+    <nav class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">Features</a>
+      <a href="#">Sign In</a>
+      <a href="#">Contact</a>
+    </nav>
+  </header>
+
+  <!-- ===== Sign Up Form ===== -->
+<main class="main-content">
   <form id="signup-form">
+    <h2>Sign Up</h2>
+    <br><br>
     <input type="text" id="name" placeholder="Full Name" required />
     <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
@@ -28,7 +43,24 @@
     </select>
     <button type="submit">Sign Up</button>
   </form>
+</main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <p>&copy; 2025 MyApp. All rights reserved.</p>
+  </footer>
 
   <script src="signup.js"></script>
+  <script>
+    // Simple Hamburger Menu Toggle
+    const hamburger = document.querySelector(".hamburger");
+    const navLinks = document.querySelector(".nav-links");
+
+    hamburger.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
+      hamburger.classList.toggle("toggle");
+    });
+  </script>
+
 </body>
 </html>
