@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Page</title>
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC6LOG_AnWQabbT1hB3tt0seqIcji4_11g",
+      authDomain: "invictus-1e456.firebaseapp.com",
+      projectId: "invictus-1e456",
+      storageBucket: "invictus-1e456.firebasestorage.app",
+      messagingSenderId: "574994763158",
+      appId: "1:574994763158:web:fce7848d138e793556e1b7",
+      measurementId: "G-Y38FCW0HGK"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    window.addFund = async function() {
+      const amount = Number(document.getElementById("amountAllocated").value);
+      const description = document.getElementById("description").value;
+
+      try {
+        await addDoc(collection(db, "funds"), {
+          amountAllocated: amount,
+          amountUsed: 0,
+          schoolId: "school_001",
+          description: description,
+          timestamp: serverTimestamp()
+        });
+        alert("Fund added successfully!");
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    };
+
+    window.fetchFunds = async function() {
+      const list = document.getElementById("fundList");
+      list.innerHTML = "";
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "funds"));
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const li = document.createElement("li");
+          li.textContent = `Allocated: ${data.amountAllocated}, Used: ${data.amountUsed}, Description: ${data.description}`;
+          list.appendChild(li);
+        });
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    };
+  </script>
+</head>
+<body>
+  <h2>Admin Page – Add and View Funds</h2>
+
+  <h3>Add Fund</h3>
+  <input type="number" id="amountAllocated" placeholder="Amount Allocated" />
+  <input type="text" id="description" placeholder="Description" />
+  <button onclick="addFund()">Add Fund</button>
+
+  <h3>View Funds</h3>
+  <button onclick="fetchFunds()">Load Funds</button>
+  <ul id="fundList"></ul>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Firebase App -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <!-- Firebase Auth -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <!-- Firebase Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Firebase Config -->
+  <script src="firebaseConfig.js"></script>
+</head>
+<body>
+  <h2>Sign Up</h2>
+  <form id="signup-form">
+    <input type="text" id="name" placeholder="Full Name" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <select id="role" required>
+      <option value="">Select Role</option>
+      <option value="admin">Admin</option>
+      <option value="school">School</option>
+      <option value="teacher">Teacher</option>
+      <option value="student">Student</option>
+      <option value="auditor">Auditor</option>
+    </select>
+    <button type="submit">Sign Up</button>
+  </form>
+
+  <script src="signup.js"></script>
+</body>
+</html>
