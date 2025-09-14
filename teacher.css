@@ -7,13 +7,62 @@
 }
 
 body {
-  background-color: #0b123d; /* Dark blue background */
+  background-color: #0b123d;
   color: #ffffff;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: 20px;
+  margin: 0;
+  padding: 0;
 }
+
+/* ===== Header ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #121d42;
+  padding: 18px 20px;
+  border-radius: 0 0 10px 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 65px;
+  font-size: 1.4rem;
+}
+
+.logo {
+  font-size: 1.4rem;
+  color: #4fc3f7;
+  font-weight: bold;
+}
+
+.nav-links a {
+  color: #ffffff;
+  text-decoration: none;
+  margin-left: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.nav-links a:hover {
+  color: #4fc3f7;
+}
+
+/* ===== Footer ===== */
+.footer {
+  text-align: center;
+  padding: 18px;
+  background-color: #121d42;
+  color: #ffffff;
+  margin-top: auto;
+  border-radius: 10px 10px 0 0;
+  font-size: 1.2rem;
+  height: 65px;
+  position: static;
+}
+/* ...rest unchanged... */
+
 
 /* ===== Headings ===== */
 h2 {
@@ -21,6 +70,16 @@ h2 {
   margin-bottom: 15px;
   color: #4fc3f7;
 }
+
+/* Specific change for Teacher Dashboard heading */
+h2.teacher-dashboard {
+  font-size: 1.6rem;       /* reduced size */
+  color: #4fc3f7;
+  margin-top: 30px;        /* ~1.5 line space below header */
+  margin-bottom: 15px;
+  padding-left: 25px;      /* added left padding */
+}
+
 
 h3 {
   font-size: 1.5rem;
@@ -137,6 +196,9 @@ tr:hover {
 @media (max-width: 768px) {
   h2 {
     font-size: 1.7rem;
+  }
+  h2.teacher-dashboard {
+    font-size: 1.8rem; /* responsive scaling */
   }
   h3 {
     font-size: 1.3rem;
