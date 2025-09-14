@@ -169,31 +169,19 @@
       }
     };
   </script>
-
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h2, h3 { margin-bottom: 10px; }
-    section { margin-bottom: 30px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    th { background-color: #0b123d; color: #fff; }
-    input, button { margin: 5px 0; padding: 8px; box-sizing: border-box; }
-    button { cursor: pointer; background-color: #4fc3f7; color: #000; border: none; border-radius: 5px; padding: 6px 12px; width: auto; }
-    button:hover { background-color: #0288d1; color: #fff; }
-  </style>
 </head>
 <body>
-  <div>
-  <header style="display: flex; justify-content: space-between; align-items: center; background-color: #121d42; padding: 15px 20px; border-radius: 8px;">
-  <h2 style="color: #4fc3f7; margin: 0;">Admin Dashboard</h2>
-  <nav>
-    <a href="#" style="font-size: large; color: #f7f8f8; text-decoration: none; margin-right: 15px;">Home</a>
-    <button onclick="logout()" style="padding: 8px 16px; border-radius: 5px; border: none; cursor: pointer; background-color: #4fc3f7; color: #000;">Logout</button>
-  </nav>
-</header>
+  <header class="header">
+    <div class="logo">FundTrack</div>
+    <nav class="nav-links">
+      <a href="main.html">Home</a>
+      <a href="login.html" onclick="logout()">Logout</a>
+    </nav>
+  </header>
 
+  <h2 style="text-align:center; margin-top:10px;">Admin Dashboard</h2>
 
-  <!-- Allocate Fund -->
+  <!-- ===== Allocate Fund Section ===== -->
   <section>
     <h3>Allocate Fund to School</h3>
     <input type="text" id="schoolId" placeholder="Enter School ID" />
@@ -202,7 +190,7 @@
     <button onclick="allocateFund()">Allocate Fund</button>
   </section>
 
-  <!-- View Funds -->
+  <!-- ===== View Funds Section ===== -->
   <section>
     <h3>View Funds</h3>
     <input type="text" id="fundFilterSchool" placeholder="Filter by School" />
@@ -223,7 +211,7 @@
     </table>
   </section>
 
-  <!-- View Expenses -->
+  <!-- ===== View Expenses Section ===== -->
   <section>
     <h3>View Expenses</h3>
     <input type="text" id="expenseFilterTeacher" placeholder="Filter by Teacher" />
@@ -244,14 +232,14 @@
     </table>
   </section>
 
-  <!-- Feedback -->
+  <!-- ===== Feedback Section ===== -->
   <section>
     <h3>Feedback</h3>
     <button onclick="fetchFeedback()">Load Feedback</button>
     <ul id="feedbackList"></ul>
   </section>
 
-  <!-- Users -->
+  <!-- ===== Users Section ===== -->
   <section>
     <h3>User Management</h3>
     <button onclick="fetchUsers()">Load Users</button>
@@ -266,5 +254,10 @@
       <tbody id="userTableBody"></tbody>
     </table>
   </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    &copy; 2025 My Website. All rights reserved.
+  </footer>
 </body>
 </html>
