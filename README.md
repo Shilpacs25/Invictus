@@ -37,6 +37,7 @@ With Firebase Authentication and Firestore integration, FundTrack ensures **secu
 
 ## Project Structure
 FundTrack/
+
 ├── main.html              # Landing page
 
 ├── index.html             # Main dashboard 
