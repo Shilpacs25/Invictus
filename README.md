@@ -38,30 +38,53 @@ With Firebase Authentication and Firestore integration, FundTrack ensures **secu
 ## Project Structure
 FundTrack/
 ├── main.html              # Landing page
+
 ├── index.html             # Main dashboard 
+
 ├── signup.html            # User signup page
+
 ├── login.html             # User login page
 
 │
+
 ├── student.html           # Student dashboard
+
 ├── student.css            # Student-specific styles
+
 │
+
 ├── teacher.html           # Teacher dashboard
+
 ├── teacher.css            # Teacher-specific styles
+
 │
+
 ├── admin.html             # Admin dashboard
+
 ├── admin.css              # Admin-specific styles
+
 │
+
 ├── style.css              # Global styles
+
 │
+
 ├── firebaseConfig.js      # Firebase project configuration
+
 ├── firestore.js           # Firestore database helper functions
+
 ├── login.js               # Login functionality
+
 ├── signup.js              # Signup functionality
+
 ├── testFirebase.js        # Firebase connection test script
+
 │
+
 ├── package.json           # Node dependencies (if any)
+
 ├── package-lock.json
+
 └── assets/                # (Optional)     images, icons, or other static resources
 
 
