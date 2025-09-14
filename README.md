@@ -6,6 +6,7 @@ As a first step of creating a generalised tracking system here we have tried to 
 It helps manage and track funds by providing **role-based dashboards** for students, teachers, and admins, ensuring that each user has access to the features relevant to them.  
 
 With Firebase Authentication and Firestore integration, FundTrack ensures **secure login, real-time data storage, and role-specific navigation**, making it a simple yet effective solution for institutional fund management.  
+[demo_link](https://res.cloudinary.com/dnhpbvj4j/video/upload/v1757824271/VIDEO_37c83794-84d1-43ce-879d-b80c78da66f0_gjgtkd.mp4)
 
 ---
 
