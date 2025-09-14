@@ -3,40 +3,85 @@ body {
   background-color: #0b123d;
   color: #ffffff;
   margin: 0;
-  padding: 20px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-header {
+/* ===== Header ===== */
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #121d42;
-  padding: 15px 20px;
-  border-radius: 8px;
+  padding: 18px 20px;
+  border-radius: 0 0 10px 10px;
+  margin-bottom: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 35px;
+  font-size: 1.4rem;
 }
 
-header h1 {
+.logo {
+  font-size: 1.4rem;
+  color: #4fc3f7;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-links a, .nav-links button {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+.nav-links a:hover {
   color: #4fc3f7;
 }
-
-header button {
-  background: linear-gradient(90deg, #4fc3f7, #0288d1);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
+/* ===== Footer ===== */
+.footer {
+  text-align: center;
+  padding: 18px 20px;
+  background-color: #121d42;
+  color: #ffffff;
+  margin-top: auto;
+  border-radius: 10px 10px 0 0;
+  font-size: 1.2rem;
+  height: 35px;
+  position: static;
 }
 
-header button:hover {
-  background: linear-gradient(90deg, #0288d1, #4fc3f7);
+/* ===== Dashboard Title ===== */
+.dashboard-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #4fc3f7;
+  margin: 20px 0 25px 0;
 }
 
+/* ===== Sections ===== */
 section {
   background-color: #121d42;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 20px;
-  margin-bottom: 20px;
+  margin: 20px auto;
+  max-width: 800px;
+  width: 90%;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
 h2 {
@@ -44,21 +89,34 @@ h2 {
   color: #81d4fa;
 }
 
+/* ===== Textarea ===== */
 textarea {
   width: 100%;
-  padding: 10px;
+  max-width: none;       /* remove restriction */
+  padding: 12px;
   border-radius: 8px;
   border: none;
   background-color: #1b2a5a;
   color: #e0e0e0;
   font-size: 1rem;
   margin-bottom: 10px;
+  outline: none;
+  resize: none;
+  box-sizing: border-box; /* ✅ ensures same width as list items */
 }
+
+
 
 textarea::placeholder {
   color: #a0baff;
 }
 
+textarea:focus {
+  background-color: #253b7a;
+  box-shadow: 0 0 0 2px #4fc3f7;
+}
+
+/* ===== Buttons ===== */
 button {
   padding: 10px 20px;
   background: linear-gradient(90deg, #4fc3f7, #0288d1);
@@ -66,21 +124,28 @@ button {
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
 }
 
 button:hover {
-  background: linear-gradient(90deg, #0288d1, #4fc3f7);
+   background: linear-gradient(90deg, #0288d1, #4fc3f7);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 140, 255, 0.5);
 }
 
+/* ===== Tables ===== */
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 15px;
 }
 
 th, td {
   border: 1px solid #2a3a6f;
-  padding: 8px;
+  padding: 10px;
   text-align: left;
+  font-size: 0.95rem;
 }
 
 th {
@@ -96,9 +161,48 @@ tr:hover {
   background-color: #253b7a;
 }
 
-footer {
-  text-align: center;
+/* ===== Lists ===== */
+ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+ul li {
+  background-color: #1b2a5a;
+  margin-bottom: 8px;
   padding: 10px;
-  background-color: #121d42;
   border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+ul li:hover {
+  background-color: #253b7a;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .dashboard-title {
+    font-size: 1.7rem;
+  }
+  h2 {
+    font-size: 1.3rem;
+  }
+  th, td {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+  input, textarea, button {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  section {
+    padding: 15px;
+  }
+  button {
+    width: 100%;
+  }
 }
