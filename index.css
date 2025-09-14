@@ -3,45 +3,63 @@ body {
   background-color: #0b123d;
   color: #ffffff;
   margin: 0;
-  padding: 20px;
+  padding: 0;
 }
 
-header {
+/* ===== Unified Header ===== */
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #121d42;
-  padding: 15px 20px;
-  border-radius: 8px;
+  padding: 18px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 40px;
+  font-size: 1.4rem;
 }
-
-header h1 {
+.logo {
   color: #4fc3f7;
+  font-size: 1.4rem;
+  font-weight: bold;
 }
-
-header button {
+.header button {
   background: linear-gradient(90deg, #4fc3f7, #0288d1);
   color: #fff;
   border: none;
   border-radius: 8px;
   padding: 8px 16px;
   cursor: pointer;
+  font-size: 1.2rem;
+}
+.header button:hover {
+  background: linear-gradient(90deg, #0288d1, #4fc3f7);
 }
 
-header button:hover {
-  background: linear-gradient(90deg, #0288d1, #4fc3f7);
+/* ===== Unified Footer ===== */
+.footer {
+  text-align: center;
+  padding: 18px 18px;
+  background-color: #121d42;
+  color: #ffffff;
+  margin-top: auto;
+  border-radius: 10px 10px 0 0;
+  font-size: 1.2rem;
+  height: 35px;
+  position: static;
 }
 
 section {
   background-color: #121d42;
   border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 30px 20px;
+  margin: 20px;
   text-align: center;
 }
 
 h2 {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   color: #81d4fa;
 }
 
@@ -62,15 +80,24 @@ h2 {
 }
 
 canvas {
-  max-width: 400px;
+  max-width: 450px;
   background-color: #1c275a;
   padding: 15px;
   border-radius: 10px;
 }
 
-footer {
-  text-align: center;
-  padding: 10px;
-  background-color: #121d42;
-  border-radius: 8px;
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .header,
+  .footer {
+    flex-direction: column;
+    text-align: center;
+    height: auto;
+    font-size: 1.1rem;
+    padding: 18px 10px;
+  }
+  .header button {
+    width: 100%;
+    margin: 5px 0;
+  }
 }
