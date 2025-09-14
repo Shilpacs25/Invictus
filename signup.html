@@ -13,21 +13,17 @@
   <script src="firebaseConfig.js"></script>
 </head>
 <body>
-
-  <!-- ===== Navbar ===== -->
   <header class="header">
     <div class="logo">FundTrack</div>
     <nav class="nav-links">
-      <a href="#" style="font-size: large;">Home</a>
+      <a href="main.html">Home</a>
       <a href="login.html">Login</a>
     </nav>
   </header>
 
-  <!-- ===== Sign Up Form ===== -->
   <main class="main-content">
     <form id="signup-form">
-      <h2>Sign Up</h2>
-      <br><br>
+      <h2>Sign Up</h2><br><br>
       <input type="text" id="name" placeholder="Full Name" required />
       <input type="email" id="email" placeholder="Email" required />
       <input type="password" id="password" placeholder="Password" required />
@@ -41,11 +37,9 @@
     </form>
   </main>
 
-  <!-- ===== Footer ===== -->
   <footer class="footer">
     <p>&copy; 2025 MyApp. All rights reserved.</p>
   </footer>
-
   <script>
     const signupForm = document.getElementById("signup-form");
 
@@ -76,15 +70,11 @@
         });
 
         alert("✅ Signup successful! Redirecting to login page...");
-        
-        // Redirect to login page
         window.location.href = "login.html";
-
       } catch (error) {
         alert("❌ Error: " + error.message);
       }
     });
   </script>
-
 </body>
 </html>
