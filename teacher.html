@@ -22,7 +22,7 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    // Add Expense with Fund Limit Check and Auto Reload
+    // Add Expense with Fund Limit Check
     window.addExpense = async function() {
       const schoolId = document.getElementById("schoolId").value.trim();
       const amount = Number(document.getElementById("amount").value);
@@ -34,7 +34,6 @@
       }
 
       try {
-        // Find the fund for the schoolId
         const fundsQuery = query(collection(db, "funds"), where("schoolId", "==", schoolId));
         const querySnapshot = await getDocs(fundsQuery);
 
@@ -52,25 +51,21 @@
           return;
         }
 
-        // Add the expense
         await addDoc(collection(db, "expenses"), {
           schoolId: schoolId,
-          teacherId: "teacher_001",  // Replace with actual teacher ID if available
+          teacherId: "teacher_001",
           amount: amount,
           description: description,
           status: "pending",
           timestamp: serverTimestamp()
         });
 
-        // Update the fund's amountUsed
         const fundRef = doc(db, "funds", fundDoc.id);
         await updateDoc(fundRef, {
           amountUsed: fundData.amountUsed + amount
         });
 
         alert("✅ Expense added and fund updated successfully!");
-
-        // Automatically reload the fund table
         fetchFunds();
 
       } catch (error) {
@@ -120,35 +115,51 @@
   </script>
 </head>
 <body>
-  <h2>Teacher Dashboard</h2>
-  <button onclick="logout()">Logout</button>
+  <!-- ===== Header ===== -->
+  <header class="header">
+    <div class="logo">FundTrack</div>
+    <nav class="nav-links">
+      <a href="main.html">Home</a>
+      <a href="login.html" onclick="logout()">Logout</a>
+    </nav>
+  </header>
 
-  <!-- Add Expense Section -->
-  <section>
-    <h3>Add Expense</h3>
-    <input type="text" id="schoolId" placeholder="School ID" />
-    <input type="number" id="amount" placeholder="Amount" />
-    <input type="text" id="description" placeholder="Description" />
-    <button onclick="addExpense()">Submit Expense</button>
-  </section>
+  <main>
+    <!-- Centered Dashboard Heading -->
+    <h2 class="dashboard-title" style="text-align:center; margin-top:15px; margin-bottom:25px;">Teacher Dashboard</h2>
 
-  <!-- View Funds Section -->
-  <section>
-    <h3>View School Funds</h3>
-    <button onclick="fetchFunds()">Load Funds</button>
-    <table border="1" cellpadding="8" cellspacing="0">
-      <thead>
-        <tr>
-          <th>School ID</th>
-          <th>Allocated</th>
-          <th>Used</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody id="fundsTableBody">
-        <!-- Rows will be loaded dynamically -->
-      </tbody>
-    </table>
-  </section>
+    <!-- Add Expense Section -->
+    <section>
+      <h3>Add Expense</h3>
+      <input type="text" id="schoolId" placeholder="School ID" />
+      <input type="number" id="amount" placeholder="Amount" />
+      <input type="text" id="description" placeholder="Description" />
+      <button onclick="addExpense()">Submit Expense</button>
+    </section>
+
+    <!-- View Funds Section -->
+    <section>
+      <h3>View School Funds</h3>
+      <button onclick="fetchFunds()">Load Funds</button>
+      <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+          <tr>
+            <th>School ID</th>
+            <th>Allocated</th>
+            <th>Used</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody id="fundsTableBody">
+          <!-- Rows will be loaded dynamically -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <p>&copy; 2025 FundTrack. All rights reserved.</p>
+  </footer>
 </body>
 </html>
