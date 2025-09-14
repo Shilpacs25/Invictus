@@ -4,7 +4,6 @@
   <title>Fund Tracker</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Blue theme consistent with previous pages */
     body {
       font-family: Arial, sans-serif;
       background-color: #0b123d;
@@ -13,46 +12,25 @@
       padding: 0;
     }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #121d42;
-      padding: 15px 20px;
-      border-radius: 0 0 10px 10px;
-    }
-
-    header .logo {
-      font-size: 1.5rem;
-      color: #4fc3f7;
-      font-weight: bold;
-    }
-
-    header .nav-links a {
-      color: #ffffff;
-      text-decoration: none;
-      margin-left: 20px;
-      font-size: 1.1rem;
-    }
-
-    header .nav-links a:hover {
-      color: #81d4fa;
-    }
-
     main {
       display: flex;
       justify-content: center;
-      align-items: center;
-      height: calc(100vh - 80px);
-      text-align: center;
-      padding: 20px;
+      align-items: stretch;
+      min-height: calc(100vh - 120px);
+      padding: 60px 80px;
+      gap: 60px;
+      flex-wrap: wrap;
     }
 
     .hero {
       background-color: #121d42;
       border-radius: 15px;
-      padding: 50px 30px;
-      max-width: 700px;
+      padding: 50px 40px;
+      max-width: 500px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .hero h1 {
@@ -62,8 +40,9 @@
     }
 
     .hero p {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       margin-bottom: 30px;
+      line-height: 1.6;
     }
 
     .hero button {
@@ -71,32 +50,56 @@
       color: #fff;
       border: none;
       border-radius: 8px;
-      padding: 12px 25px;
+      padding: 14px 28px;
       font-size: 1rem;
       cursor: pointer;
       transition: 0.3s;
+      align-self: flex-start;
     }
 
     .hero button:hover {
       background: linear-gradient(90deg, #0288d1, #4fc3f7);
     }
 
-    footer {
-      text-align: center;
-      padding: 15px;
-      background-color: #121d42;
-      color: #ffffff;
+    .image-box {
+      flex: 1;
+      max-width: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      main {
+        flex-direction: column;
+        padding: 30px;
+        gap: 30px;
+        align-items: center;
+      }
+      .hero, .image-box {
+        max-width: 90%;
+        height: auto;
+      }
+      .image-box img {
+        height: auto;
+        object-fit: contain;
+      }
     }
   </style>
 </head>
 <body>
 
-  <header>
+  <header class="header">
     <div class="logo">FundTrack</div>
-    <nav class="nav-links">
-      <a href="signup.html">Sign Up</a>
-      <a href="login.html">Login</a>
-    </nav>
   </header>
 
   <main>
@@ -105,9 +108,13 @@
       <p>Check our sample fund tracking system created for the purpose of schools.</p>
       <a href="index.html"><button>Get Started</button></a>
     </div>
+
+    <div class="image-box">
+      <img src="images/main.jpg" alt="School Fund Management">
+    </div>
   </main>
 
-  <footer>
+  <footer class="footer">
     <p>&copy; 2025 FundTrack. All rights reserved.</p>
   </footer>
 
