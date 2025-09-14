@@ -123,52 +123,60 @@
   </script>
 </head>
 <body>
-  <header>
-    <h1>Student Dashboard</h1>
-    <button onclick="logout()">Logout</button>
-  </header>
+  <!-- ===== Header ===== -->
+  <header class="header">
+  <div class="logo">FundTrack</div>
+  <nav class="nav-links">
+    <a href="main.html">Home</a>
+    <a href="login.html" onclick="logout()">Logout</a>
+  </nav>
+</header>
 
-  <section>
-    <h2>Feedback</h2>
-    <ul id="feedbackList"></ul>
-    <textarea id="feedbackInput" rows="3" placeholder="Write your feedback here..."></textarea>
-    <button onclick="submitFeedback()">Submit Feedback</button>
-  </section>
+  <main>
+    <h2 class="dashboard-title">Student Dashboard</h2>
 
-  <section>
-    <h2>Funds</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>School</th>
-          <th>Allocated</th>
-          <th>Used</th>
-          <th>Description</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody id="fundTableBody"></tbody>
-    </table>
-  </section>
+    <section>
+      <h2>Feedback</h2>
+      <ul id="feedbackList"></ul>
+      <textarea id="feedbackInput" rows="3" placeholder="Write your feedback here..."></textarea>
+      <button onclick="submitFeedback()">Submit Feedback</button>
+    </section>
 
-  <section>
-    <h2>Expenses</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Teacher</th>
-          <th>School</th>
-          <th>Amount</th>
-          <th>Description</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody id="expenseTableBody"></tbody>
-    </table>
-  </section>
+    <section>
+      <h2>Funds</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>School</th>
+            <th>Allocated</th>
+            <th>Used</th>
+            <th>Description</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="fundTableBody"></tbody>
+      </table>
+    </section>
 
-  <footer>
-    <p>&copy; 2025 Invictus Educational Portal</p>
-  </footer>
+    <section>
+      <h2>Expenses</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Teacher</th>
+            <th>School</th>
+            <th>Amount</th>
+            <th>Description</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="expenseTableBody"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="footer">
+  <p>&copy; 2025 Invictus Educational Portal</p>
+</footer>
 </body>
 </html>
