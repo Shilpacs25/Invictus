@@ -1,123 +1,122 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>FundTrack</title>
-  <link rel="stylesheet" href="index.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+  <title>Fund Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0b123d;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyC6LOG_AnWQabbT1hB3tt0seqIcji4_11g",
-      authDomain: "invictus-1e456.firebaseapp.com",
-      projectId: "invictus-1e456",
-      storageBucket: "invictus-1e456.firebasestorage.app",
-      messagingSenderId: "574994763158",
-      appId: "1:574994763158:web:fce7848d138e793556e1b7",
-      measurementId: "G-Y38FCW0HGK"
-    };
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      min-height: calc(100vh - 120px);
+      padding: 60px 80px;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    .hero {
+      background-color: #121d42;
+      border-radius: 15px;
+      padding: 50px 40px;
+      max-width: 500px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
 
-    let barChart, donutChart;
+    .hero h1 {
+      color: #4fc3f7;
+      margin-bottom: 20px;
+      font-size: 2rem;
+    }
 
-    window.loadFundSummary = async function() {
-      const schoolIds = [];
-      const allocatedAmounts = [];
-      const usedAmounts = [];
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
 
-      try {
-        const fundsSnap = await getDocs(collection(db, "funds"));
+    .hero button {
+      background: linear-gradient(90deg, #4fc3f7, #0288d1);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 28px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      align-self: flex-start;
+    }
 
-        fundsSnap.forEach(doc => {
-          const data = doc.data();
-          schoolIds.push(data.schoolId || "N/A");
-          allocatedAmounts.push(Number(data.amountAllocated) || 0);
-          usedAmounts.push(Number(data.amountUsed) || 0);
-        });
+    .hero button:hover {
+      background: linear-gradient(90deg, #0288d1, #4fc3f7);
+    }
 
-        const totalAllocated = allocatedAmounts.reduce((a,b) => a+b, 0);
-        const totalUsed = usedAmounts.reduce((a,b) => a+b, 0);
-        const remainingFunds = totalAllocated - totalUsed;
+    .image-box {
+      flex: 1;
+      max-width: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        document.getElementById("allocatedFunds").textContent = totalAllocated;
-        document.getElementById("usedFunds").textContent = totalUsed;
-        document.getElementById("remainingFunds").textContent = remainingFunds;
+    .image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
 
-        // Donut Chart
-        const ctxDonut = document.getElementById("donutChart").getContext("2d");
-        if (donutChart) donutChart.destroy();
-        donutChart = new Chart(ctxDonut, {
-          type: "doughnut",
-          data: {
-            labels: ["Used", "Remaining"],
-            datasets: [{ data: [totalUsed, remainingFunds], backgroundColor: ["#e57373", "#81c784"] }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: "70%",
-            plugins: { legend: { labels: { color: "#ffffff" } } }
-          }
-        });
-
-        // Bar Chart
-        const ctxBar = document.getElementById("barChart").getContext("2d");
-        if (barChart) barChart.destroy();
-        barChart = new Chart(ctxBar, {
-          type: "bar",
-          data: {
-            labels: schoolIds,
-            datasets: [
-              { label: "Allocated", data: allocatedAmounts, backgroundColor: "#4fc3f7" },
-              { label: "Used", data: usedAmounts, backgroundColor: "#e57373" }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { labels: { color: "#ffffff" } } },
-            scales: {
-              x: { ticks: { color: "#ffffff" }, grid: { color: "#ffffff55" } },
-              y: { ticks: { color: "#ffffff" }, grid: { color: "#ffffff55" } }
-            }
-          }
-        });
-
-      } catch (error) {
-        alert("Error loading fund summary: " + error.message);
+    /* Responsive */
+    @media (max-width: 900px) {
+      main {
+        flex-direction: column;
+        padding: 30px;
+        gap: 30px;
+        align-items: center;
       }
-    };
-
-    window.onload = loadFundSummary;
-  </script>
+      .hero, .image-box {
+        max-width: 90%;
+        height: auto;
+      }
+      .image-box img {
+        height: auto;
+        object-fit: contain;
+      }
+    }
+  </style>
 </head>
 <body>
+
   <header class="header">
-    <h1 class="logo">FundTrack</h1>
-    <div style="display: flex; gap: 10px;">
-      <button onclick="window.location.href='signup.html'">Signup</button>
-      <button onclick="window.location.href='login.html'">Login</button>
-    </div>
+    <div class="logo">FundTrack</div>
   </header>
 
-  <section>
-    <h2>School Funds Overview</h2>
-    <div class="fund-summary">
-      <p><strong>Total Allocated:</strong> ₹ <span id="allocatedFunds">0</span></p>
-      <p><strong>Total Used:</strong> ₹ <span id="usedFunds">0</span></p>
-      <p><strong>Remaining Funds:</strong> ₹ <span id="remainingFunds">0</span></p>
+  <main>
+    <div class="hero">
+      <h1>Welcome to Fund Tracker</h1>
+      <p>Check our sample fund tracking system created for the purpose of schools.</p>
+      <a href="index.html"><button>Get Started</button></a>
     </div>
 
-    <div class="charts">
-      <canvas id="donutChart"></canvas>
-      <canvas id="barChart"></canvas>
+    <div class="image-box">
+      <img src="https://res.cloudinary.com/dnhpbvj4j/image/upload/v1757828712/WhatsApp_Image_2025-09-14_at_11.14.35_AM_zls50f.jpg" alt="School Fund Management">
     </div>
-  </section>
+  </main>
+
   <footer class="footer">
     <p>&copy; 2025 FundTrack. All rights reserved.</p>
   </footer>
+
 </body>
 </html>
