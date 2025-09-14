@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>School Funds Overview</title>
+  <title>FundTrack</title>
   <link rel="stylesheet" href="index.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script type="module">
@@ -46,7 +46,7 @@
         document.getElementById("usedFunds").textContent = totalUsed;
         document.getElementById("remainingFunds").textContent = remainingFunds;
 
-        // ===== Donut Chart =====
+        // Donut Chart
         const ctxDonut = document.getElementById("donutChart").getContext("2d");
         if (donutChart) donutChart.destroy();
         donutChart = new Chart(ctxDonut, {
@@ -55,10 +55,15 @@
             labels: ["Used", "Remaining"],
             datasets: [{ data: [totalUsed, remainingFunds], backgroundColor: ["#e57373", "#81c784"] }]
           },
-          options: { responsive: true, cutout: "70%", plugins: { legend: { labels: { color: "#ffffff" } } } }
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "70%",
+            plugins: { legend: { labels: { color: "#ffffff" } } }
+          }
         });
 
-        // ===== Bar Chart =====
+        // Bar Chart
         const ctxBar = document.getElementById("barChart").getContext("2d");
         if (barChart) barChart.destroy();
         barChart = new Chart(ctxBar, {
@@ -72,6 +77,7 @@
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: { legend: { labels: { color: "#ffffff" } } },
             scales: {
               x: { ticks: { color: "#ffffff" }, grid: { color: "#ffffff55" } },
@@ -87,25 +93,10 @@
 
     window.onload = loadFundSummary;
   </script>
-  <style>
-    body { font-family: Arial, sans-serif; background-color: #0b123d; color: #ffffff; margin: 0; padding: 20px; }
-    header { display: flex; justify-content: space-between; align-items: center; background-color: #121d42; padding: 15px 20px; border-radius: 8px; }
-    header h1 { color: #4fc3f7; }
-    header button { background: linear-gradient(90deg, #4fc3f7, #0288d1); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; }
-    header button:hover { background: linear-gradient(90deg, #0288d1, #4fc3f7); }
-    section { background-color: #121d42; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
-    h2 { margin-bottom: 15px; color: #81d4fa; text-align: center; }
-    .fund-summary { margin-bottom: 20px; text-align: center; }
-    .fund-summary p { font-size: 1.2rem; margin: 8px 0; }
-    .charts { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
-    .chart-card { background-color: #1c275a; padding: 15px; border-radius: 10px; width: 100%; }
-    canvas { max-width: 100%; height: 300px; }
-    footer { text-align: center; padding: 10px; background-color: #121d42; border-radius: 8px; }
-  </style>
 </head>
 <body>
-  <header>
-    <h1>School Funds Overview</h1>
+  <header class="header">
+    <h1 class="logo">FundTrack</h1>
     <div style="display: flex; gap: 10px;">
       <button onclick="window.location.href='signup.html'">Signup</button>
       <button onclick="window.location.href='login.html'">Login</button>
@@ -113,7 +104,7 @@
   </header>
 
   <section>
-    <h2>School Funds Summary</h2>
+    <h2>School Funds Overview</h2>
     <div class="fund-summary">
       <p><strong>Total Allocated:</strong> ₹ <span id="allocatedFunds">0</span></p>
       <p><strong>Total Used:</strong> ₹ <span id="usedFunds">0</span></p>
@@ -121,17 +112,12 @@
     </div>
 
     <div class="charts">
-      <div class="chart-card" style="max-width: 300px;">
-        <canvas id="donutChart"></canvas>
-      </div>
-      <div class="chart-card" style="max-width: 600px;">
-        <canvas id="barChart"></canvas>
-      </div>
+      <canvas id="donutChart"></canvas>
+      <canvas id="barChart"></canvas>
     </div>
   </section>
-
-  <footer>
-    <p>&copy; 2025 Invictus Educational Portal</p>
+  <footer class="footer">
+    <p>&copy; 2025 FundTrack. All rights reserved.</p>
   </footer>
 </body>
 </html>
